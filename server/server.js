@@ -56,15 +56,26 @@ ruptelaServer.on('listening', () => {
 });
 
 // Llega mensaje
-ruptelaServer.on('message', (msg, remoteHost) => {
+ruptelaServer.on('message', (data, remoteHost) => {
 
     let inicio = new Date();
-    console.log(colors.green(`\nRecibido: ${msg} from ${remoteHost.port} ${fechaHora()}`));
+    console.log(colors.green(`\nRecibido: ${data} from ${remoteHost.port} ${fechaHora()}`));
 
     // Identificar origen y mensaje
     let { address, port } = remoteHost;
 
-    ruptela.getMensaje(msg, (imei, ack, posicion) => {
+    //const msg = ruptela.getMensaje(data);
+    // console.log(colors.red(msg));
+    // if (!res.error) {
+    //     //do something with res.data
+
+    //     //return acknowledgement
+    //     conn.write(res.ack);
+    // } else {
+    //     //do something with res.error
+    // }
+
+    ruptela.getMensaje(data, (imei, ack, posicion) => {
 
         if (vehiculos.getVehiculoByIMEI(imei)) { // IMEI en la base de datos
 
@@ -207,7 +218,7 @@ MySQL.ejecutarQuery("SELECT * FROM avl_vehiculos_view", (err, results) => {
         console.log(colors.white(`\nServidor WEB     corriendo en puerto ${ process.env.WEB_PORT }`));
     });
 
-    geocod = new Geocod();
+    //geocod = new Geocod();
     ruptelaServer.bind(process.env.RUPTELA_PORT, process.env.UDP_HOST); // Iniciar Servidor Ruptela
     enforaServer.bind(process.env.ENFORA_PORT, process.env.UDP_HOST); // Iniciar Servidor Enfora
     appServer.bind(process.env.APP_PORT, process.env.UDP_HOST); // Iniciar Servidor APP
